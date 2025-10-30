@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Pusher Chat (Client Only)</title>
+  <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    h2 { margin-bottom: 10px; }
+    #chat { border: 1px solid #ccc; background: #fff; padding: 10px; height: 300px; overflow-y: scroll; margin-bottom: 10px; }
+    .msg { margin: 5px 0; }
+    .user { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Pusher Chat</h2>
+  <div id="chat"></div>
+  <p>This version listens for messages. To send messages, use the Pusher Debug Console or add a backend.</p>
+
+  <script>
+    // Enable logging (remove in production)
+    Pusher.logToConsole = true;
+
+    // Initialize Pusher
+    const pusher = new Pusher('6e3435d4a0677bd5dda3', {
+      cluster: 'us2'
+    });
+
+    // Subscribe to channel and event
+    const channel = pusher.subscribe('chat-channel');
+    channel.bind('new-message', function(data) {
+      const chat = document.getElementById('chat');
+      const msg = document.createElement('div');
+      msg.className = 'msg';
+      msg.innerHTML = `<span class="user">${data.user}:</span> ${data.message}`;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    });
+  </script>
+</body>
+</html>
